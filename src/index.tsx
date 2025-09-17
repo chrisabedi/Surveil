@@ -21,46 +21,6 @@ app.get('/', (req: Request, res: Response) => {
   res.sendFile(path.join(staticPath, 'dist', 'index.html'));
 })
 
-app.get("/api/hello", async (req: Request, res: Response) => {
-
-
-  const client = new ScryfallClient()
-
-  let data = {
-    fuzzy: 'aust com'
-  }
-  let message = await client.getCards(data)
-
-  return res.json({
-    message,
-    method: "GET",
-  });
-});
-app.get("/api/hello", (req: Request, res: Response) => {
-
-  return res.json({
-    message: "Hello, world!",
-    method: "GET",
-  });
-});
-
-app.put("/api/hello", (req: Request, res: Response) => {
-
-  return res.json({
-    message: "Hello, world!",
-    method: "PUT",
-  });
-
-});
-
-app.get("/api/hello/:name", (req: Request, res: Response) => {
-  const name = req.params.name;
-  return res.json({
-    message: `Hello, ${name}!`,
-  });
-
-})
-
 app.post("/api/moxfield-import", async (req: Request, res: Response) => {
   const { decklist } = req.body;
 
@@ -73,7 +33,7 @@ app.post("/api/moxfield-import", async (req: Request, res: Response) => {
 
   const cardNames = lines.map(line => {
     // Regex to capture card name, ignoring quantity and set info in parentheses
-    const match = line.trim().match(/^(?:\d+\s*x?\s*)?(.+?)(?:\s*\(.+\))?$/);
+    const match = line.trim().match(/^(?:SB:|Commander:)?\s*\d+\s+(.+?)(?:\s+\([^()]+\)\s+[\w-]+)?$/);
     if (match && match[1]) {
       return match[1].trim();
     }
