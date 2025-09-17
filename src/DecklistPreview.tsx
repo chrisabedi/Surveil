@@ -26,8 +26,9 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
 
     const handleMouseEnter = (event: React.MouseEvent<HTMLTableRowElement>, card: ScryfallCard) => {
         clearTimeout(hideTimer.current);
+        const rect = event.currentTarget.getBoundingClientRect();
         setHoveredCard(card);
-        setModalPosition({ x: event.clientX, y: event.clientY });
+        setModalPosition({ x: rect.right, y: rect.top });
     };
 
     const handleMouseLeave = () => {
