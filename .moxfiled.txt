@@ -1,0 +1,99 @@
+1 Trelasarra, Moon Dancer (AFR) 236
+1 Aetherflux Reservoir (PLST) KLD-192
+1 Alhammarret's Archive (ORI) 221
+1 Angel of Vitality (M20) 4
+1 Archivist of Oghma (CLB) 4
+1 Auriok Champion (IMA) 9
+1 Authority of the Consuls (KLD) 5
+1 Aven Interrupter (OTJ) 4
+1 Awaken the Woods (PBRO) 170p
+1 Bala Ged Recovery // Bala Ged Sanctuary (ZNR) 180
+1 Beast Within (CMR) 423
+1 Birds of Paradise (M12) 165
+1 Bountiful Promenade (CLB) 348
+1 Bridgeworks Battle // Tanglespan Bridgeworks (MH3) 249
+1 Brushland (BRO) 259
+1 Call the Coppercoats (C20) 23
+1 Canopy Vista (LCC) 321
+1 Cleric Class (AFR) 6 *F*
+1 Collective Resistance (MH3) 147
+1 Command Tower (LCC) 325
+1 Congregate (DMR) 4
+1 Crested Sunmare (HOU) 6
+1 Dawn of Hope (PGRN) 8p
+1 Daxos, Blessed by the Sun (PLST) THB-9
+1 Demolition Field (BRO) 260
+1 Disciple of Freyalise // Garden of Freyalise (MH3) 250 *F*
+1 Eerie Interlude (SOI) 16
+1 Enduring Vitality (DSK) 176
+1 Essence Warden (PLC) 145
+1 Eternal Witness (CMM) 286 *F*
+1 Exemplar of Light (FDN) 11
+1 Exotic Orchard (LCC) 329
+1 Farhaven Elf (KHC) 62
+1 Finale of Devastation (CMM) 289
+11 Forest (MOM) 281
+1 Generous Gift (MH1) 11
+1 Ghostway (RVR) 308
+1 Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun (LCI) 188
+1 Haliya, Guided by Light (EOE) 19
+1 Heroic Intervention (M21) 188
+1 Lathiel, the Bounteous Dawn (MUL) 50
+1 Lifestream's Blessing (FIC) 67
+1 Loran of the Third Path (MKC) 71
+1 Lunarch Veteran // Luminous Phantom (MID) 27
+1 Misty Rainforest (MH2) 250
+1 Nature's Claim (EMA) 178
+1 Nature's Lore (CLB) 244
+1 Open the Way (MAT) 23
+1 Overwhelming Stampede (CMA) 131
+1 Path to Exile (2X2) 23
+10 Plains (M21) 262
+1 Prosperous Innkeeper (BLC) 121
+1 Radiant Grove (DMU) 253
+1 Reclamation Sage (FDN) 231
+1 Restoration Magic (FIN) 30
+1 Return of the Wildspeaker (ZNC) 79
+1 Rishkar's Expertise (NCC) 306
+1 Rogue's Passage (LCC) 349
+1 Sakura-Tribe Elder (CHK) 239
+1 Scavenger Grounds (PIP) 287
+1 Scavenging Ooze (FDN) 232
+1 Sevinne's Reclamation (MH3) 267
+1 Sol Ring (C15) 268
+1 Soul Warden (EXO) 21
+1 Soul-Guide Lantern (EOC) 143
+1 Soul's Attendant (ROE) 44
+1 Springheart Nantuko (MH3) 171 *F*
+1 Strength of the Harvest // Haven of the Harvest (MH3) 258
+1 Suture Priest (NPH) 25
+1 Swords to Plowshares (EMA) 32
+1 Tamiyo's Safekeeping (NEO) 211
+1 Temple Garden (GRN) 258
+1 The Gaffer (LTC) 12
+1 Three Visits (OTC) 209
+1 Trudge Garden (C21) 69
+1 Tyvar's Stand (ONE) 190 *F*
+1 Well of Lost Dreams (C13) 271
+1 Will of the Mardu (TDC) 17
+1 Windswept Heath (KTK) 248
+1 Witch Enchanter // Witch-Blessed Meadow (MH3) 239 *F*
+1 Wood Elves (DD1) 18
+
+SIDEBOARD:
+1 Arachnogenesis (DSC) 169
+1 Arcane Signet (C20) 237
+1 Auriok Champion (IMA) 9
+1 Crested Sunmare (HOU) 6
+1 Daxos, Blessed by the Sun (PLST) THB-9
+1 Exemplar of Light (FDN) 11
+1 Farseek (RVR) 138
+1 Fumigate (KLD) 15
+1 Heliod's Intervention (OTC) 81
+1 Lathiel, the Bounteous Dawn (MUL) 50
+1 Lunarch Veteran // Luminous Phantom (MID) 27
+1 Prosperous Innkeeper (BLC) 121
+1 Rhox Faithmender (TDC) 128
+1 Solemn Simulacrum (J22) 797
+1 Stroke of Midnight (WOE) 33
+1 Trudge Garden (C21) 69

@@ -1,41 +1,74 @@
 import { serve } from "bun";
-import index from "./index.html";
+import express, { type NextFunction, type Request, type Response } from 'express';
+import path from 'path'
+import { getCwd } from "./lib/utils";
+const app = express();
+const port = process.env.PORT || 3000;
+import { ScryfallClient } from "./Clients/ScryFall";
+function loggerMiddleware(req: Request, res: Response, next: NextFunction) {
+  console.log(`Route hit: ${req.method} ${req.originalUrl} at ${new Date().toISOString()}`);
+  next(); // Pass control to the next middleware or route handler
+}
+app.use(loggerMiddleware)
 
-const server = serve({
-  routes: {
-    // Serve index.html for all unmatched routes.
-    "/*": index,
+app.use(express.json())
+let staticPath = getCwd()
 
-    "/api/hello": {
-      async GET(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "GET",
-        });
-      },
-      async PUT(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "PUT",
-        });
-      },
-    },
+app.use(express.static(path.join(staticPath, 'dist')));
 
-    "/api/hello/:name": async req => {
-      const name = req.params.name;
-      return Response.json({
-        message: `Hello, ${name}!`,
-      });
-    },
-  },
+app.get('/', (req: Request, res: Response) => {
 
-  development: process.env.NODE_ENV !== "production" && {
-    // Enable browser hot reloading in development
-    hmr: true,
+  res.sendFile(path.join(staticPath, 'dist', 'index.html'));
+})
 
-    // Echo console logs from the browser to the server
-    console: true,
-  },
+app.get("/api/hello", async (req: Request, res: Response) => {
+
+
+  const client = new ScryfallClient()
+
+  let data = {
+    fuzzy: 'aust com'
+  }
+  let message = await client.getCards(data)
+
+  return res.json({
+    message,
+    method: "GET",
+  });
+});
+app.get("/api/hello", (req: Request, res: Response) => {
+
+  return res.json({
+    message: "Hello, world!",
+    method: "GET",
+  });
 });
 
-console.log(`🚀 Server running at ${server.url}`);
+app.put("/api/hello", (req: Request, res: Response) => {
+
+  return res.json({
+    message: "Hello, world!",
+    method: "PUT",
+  });
+
+});
+
+app.get("/api/hello/:name", (req: Request, res: Response) => {
+  const name = req.params.name;
+  return res.json({
+    message: `Hello, ${name}!`,
+  });
+
+})
+
+// development: process.env.NODE_ENV !== "production" && {
+//   // Enable browser hot reloading in development
+//   hmr: true,
+
+//   // Echo console logs from the browser to the server
+//   console: true,
+// },
+
+app.listen(port, () => {
+  console.log(`🚀 Server running at ${port}`);
+})
