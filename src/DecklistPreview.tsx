@@ -32,7 +32,8 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                     <thead className="text-xs text-muted-foreground uppercase">
                         <tr>
                             <th scope="col" className="px-2 py-2 w-8">#</th>
-                            <th scope="col" className="px-2 py-2">Name & Price (USD)</th>
+                            <th scope="col" className="px-2 py-2">Name</th>
+                            <th scope="col" className="px-2 py-2 text-right">Price (USD)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,19 +41,19 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                             <tr
                                 key={card.name}
                                 onMouseEnter={() => setHoveredImage(card.image_uris.small)}
-                                onMouseLeave={() => setHoveredImage(null)}
                                 onClick={() => window.open(card.purchase_uris.tcgplayer, '_blank')}
                                 className="cursor-pointer hover:bg-muted-foreground/20"
                             >
                                 <td className="px-2 py-1">{index + 1}</td>
-                                <td className="px-2 py-1 truncate"><span className="underline">{card.name}</span> - ${card.prices?.usd ?? 'N/A'}</td>
+                                <td className="px-2 py-1 truncate"><span className="underline text-blue-500">{card.name}</span></td>
+                                <td className="px-2 py-1 text-right">${card.prices?.usd ?? 'N/A'}</td>
                             </tr>
                         ))}
                     </tbody>
                     <tfoot>
                         <tr className="font-semibold border-t">
-                            <td className="px-2 py-2 text-right">Total:</td>
-                            <td className="px-2 py-2">${totalPrice.toFixed(2)}</td>
+                            <td colSpan="2" className="px-2 py-2 text-right">Total:</td>
+                            <td className="px-2 py-2 text-right">${totalPrice.toFixed(2)}</td>
                         </tr>
                     </tfoot>
                 </table>
