@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export interface ScryfallCard {
     name: string;
@@ -22,20 +22,38 @@ export interface DecklistItem {
 function CardList({ cards }: { cards: DecklistItem[] }) {
     const [hoveredCard, setHoveredCard] = useState<ScryfallCard | null>(null);
     const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const handleMouseEnter = (event: React.MouseEvent<HTMLTableRowElement>, card: ScryfallCard) => {
+        if (isMobile) return;
         setHoveredCard(card);
-        const span = event.currentTarget.querySelector('span');
-        if (span) {
-            const spanRect = span.getBoundingClientRect();
-            setModalPosition({ x: spanRect.right, y: spanRect.top });
-        } else {
-            setModalPosition({ x: event.clientX, y: event.clientY });
-        }
+        setModalPosition({ x: event.clientX, y: event.clientY });
     };
 
     const handleMouseLeave = () => {
+        if (isMobile) return;
         setHoveredCard(null);
+    };
+
+    const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement>, card: ScryfallCard) => {
+        if (!isMobile) return;
+        if (hoveredCard?.name === card.name) {
+            setHoveredCard(null);
+        } else {
+            setHoveredCard(card);
+            const span = event.currentTarget.querySelector('span');
+            if (span) {
+                const spanRect = span.getBoundingClientRect();
+                setModalPosition({ x: spanRect.right, y: spanRect.top });
+            }
+        }
     };
 
     const totalPrice = cards.reduce((total, card) => {
@@ -87,6 +105,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                         key={card.name}
                                         onMouseEnter={cardData ? (e) => handleMouseEnter(e, cardData) : undefined}
                                         onMouseLeave={cardData ? handleMouseLeave : undefined}
+                                        onClick={cardData ? (e) => handleRowClick(e, cardData) : undefined}
                                         className={cardData ? "cursor-pointer hover:bg-muted-foreground/20" : ""}
                                     >
                                         <td className="px-2 py-1">{index + 1}</td>
@@ -113,6 +132,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                             key={card.name}
                                             onMouseEnter={cardData ? (e) => handleMouseEnter(e, cardData) : undefined}
                                             onMouseLeave={cardData ? handleMouseLeave : undefined}
+                                            onClick={cardData ? (e) => handleRowClick(e, cardData) : undefined}
                                             className={cardData ? "cursor-pointer hover:bg-muted-foreground/20" : ""}
                                         >
                                             <td className="px-2 py-1">{firstHalf.length + index + 1}</td>
@@ -136,7 +156,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                     style={{
                         top: `${modalPosition.y}px`,
                         left: `${modalPosition.x}px`,
-                        transform: 'translate(15px, -100%)',
+                        transform: isMobile ? 'translate(10px, 0)' : 'translate(15px, 15px)',
                     }}
                 >
                     <div className="bg-card/50 backdrop-blur-sm border border-muted rounded-xl shadow-2xl p-2 pointer-events-auto w-fit">
@@ -170,7 +190,6 @@ export function DecklistPreview({ apiResponse }: DecklistPreviewProps) {
 
     return (
         <div className="text-left">
-            <h3 className="font-semibold mb-2">Decklist Preview:</h3>
             {typeof apiResponse === 'string' ? (
                 <pre className="whitespace-pre-wrap font-mono text-sm">{apiResponse}</pre>
             ) : (
