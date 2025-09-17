@@ -16,6 +16,16 @@ export interface ScryfallCard {
 
 function CardList({ cards }: { cards: ScryfallCard[] }) {
     const [hoveredCard, setHoveredCard] = useState<ScryfallCard | null>(null);
+    const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+
+    const handleMouseEnter = (event: React.MouseEvent<HTMLTableRowElement>, card: ScryfallCard) => {
+        setHoveredCard(card);
+        setModalPosition({ x: event.clientX, y: event.clientY });
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredCard(null);
+    };
 
     const totalPrice = cards.reduce((total, card) => {
         const price = parseFloat(card.prices?.usd ?? '0');
@@ -62,7 +72,8 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                             {firstHalf.map((card, index) => (
                                 <tr
                                     key={card.name}
-                                    onMouseEnter={() => setHoveredCard(card)}
+                                    onMouseEnter={(e) => handleMouseEnter(e, card)}
+                                    onMouseLeave={handleMouseLeave}
                                     className="cursor-pointer hover:bg-muted-foreground/20"
                                 >
                                     <td className="px-2 py-1">{index + 1}</td>
@@ -82,7 +93,8 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                                 {secondHalf.map((card, index) => (
                                     <tr
                                         key={card.name}
-                                        onMouseEnter={() => setHoveredCard(card)}
+                                        onMouseEnter={(e) => handleMouseEnter(e, card)}
+                                        onMouseLeave={handleMouseLeave}
                                         className="cursor-pointer hover:bg-muted-foreground/20"
                                     >
                                         <td className="px-2 py-1">{firstHalf.length + index + 1}</td>
@@ -98,7 +110,14 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
             </div>
 
             {hoveredCard && (
-                <div className="fixed top-1/2 right-8 transform -translate-y-1/2 z-50 pointer-events-none">
+                <div
+                    className="fixed z-50 pointer-events-none"
+                    style={{
+                        top: `${modalPosition.y}px`,
+                        left: `${modalPosition.x}px`,
+                        transform: 'translate(15px, -100%)',
+                    }}
+                >
                     <div className="bg-card/50 backdrop-blur-sm border border-muted rounded-xl shadow-2xl p-2 pointer-events-auto w-fit">
                         <picture>
                             <source media="(min-width: 768px)" srcSet={hoveredCard.image_uris.normal || hoveredCard.image_uris.small} />
