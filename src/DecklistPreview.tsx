@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export interface ScryfallCard {
     name: string;
-    image_uris: {
+    image_uris?: {
         small: string;
         normal?: string;
     };
@@ -141,11 +141,11 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                 >
                     <div className="bg-card/50 backdrop-blur-sm border border-muted rounded-xl shadow-2xl p-2 pointer-events-auto w-fit">
                         <picture>
-                            <source media="(min-width: 768px)" srcSet={hoveredCard.image_uris.normal || hoveredCard.image_uris.small} />
-                            <img src={hoveredCard.image_uris.small} alt="Card preview" className="rounded-lg w-64 md:w-auto md:max-w-xs" />
+                            <source media="(min-width: 768px)" srcSet={hoveredCard.image_uris?.normal || hoveredCard.image_uris?.small} />
+                            <img src={hoveredCard.image_uris?.small} alt="Card preview" className="rounded-lg w-64 md:w-auto md:max-w-xs" />
                         </picture>
                         <a
-                            href={hoveredCard.purchase_uris.tcgplayer}
+                            href={hoveredCard.purchase_uris?.tcgplayer}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="block text-center mt-2 text-blue-500 underline"
