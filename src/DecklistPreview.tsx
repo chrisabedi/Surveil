@@ -132,9 +132,8 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                 <div
                     className="fixed z-50"
                     style={{
-                        top: `${modalPosition.y}px`,
-                        left: `${modalPosition.x}px`,
-                        transform: 'translate(20px, 20px)',
+                        top: `${modalPosition.y}`,
+                        left: `${modalPosition.x}`,
                     }}
                     onMouseEnter={() => clearTimeout(hideTimer.current)}
                     onMouseLeave={handleMouseLeave}
