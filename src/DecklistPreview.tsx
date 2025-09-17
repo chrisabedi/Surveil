@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 
 export interface ScryfallCard {
     name: string;
@@ -22,14 +22,18 @@ export interface DecklistItem {
 function CardList({ cards }: { cards: DecklistItem[] }) {
     const [hoveredCard, setHoveredCard] = useState<ScryfallCard | null>(null);
     const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+    const hideTimer = useRef<number>();
 
     const handleMouseEnter = (event: React.MouseEvent<HTMLTableRowElement>, card: ScryfallCard) => {
+        clearTimeout(hideTimer.current);
         setHoveredCard(card);
         setModalPosition({ x: event.clientX, y: event.clientY });
     };
 
     const handleMouseLeave = () => {
-        setHoveredCard(null);
+        hideTimer.current = window.setTimeout(() => {
+            setHoveredCard(null);
+        }, 100);
     };
 
     const totalPrice = cards.reduce((total, card) => {
@@ -126,14 +130,16 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
 
             {hoveredCard && (
                 <div
-                    className="fixed z-50 pointer-events-none"
+                    className="fixed z-50"
                     style={{
                         top: `${modalPosition.y}px`,
                         left: `${modalPosition.x}px`,
-                        transform: 'translate(15px, 15px)',
+                        transform: 'translate(20px, -50%)',
                     }}
+                    onMouseEnter={() => clearTimeout(hideTimer.current)}
+                    onMouseLeave={handleMouseLeave}
                 >
-                    <div className="bg-card/50 backdrop-blur-sm border border-muted rounded-xl shadow-2xl p-2 pointer-events-auto w-fit">
+                    <div className="bg-card/50 backdrop-blur-sm border border-muted rounded-xl shadow-2xl p-2 w-fit">
                         <picture>
                             <source media="(min-width: 768px)" srcSet={hoveredCard.image_uris?.normal || hoveredCard.image_uris?.small} />
                             <img src={hoveredCard.image_uris?.small} alt="Card preview" className="rounded-lg w-64 md:w-auto md:max-w-xs" />
