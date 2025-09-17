@@ -14,13 +14,24 @@ export interface ScryfallCard {
     };
 }
 
-function CardList({ cards }: { cards: ScryfallCard[] }) {
+export interface DecklistItem {
+    name: string;
+    data: ScryfallCard | null;
+}
+
+function CardList({ cards }: { cards: DecklistItem[] }) {
     const [hoveredCard, setHoveredCard] = useState<ScryfallCard | null>(null);
     const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
 
     const handleMouseEnter = (event: React.MouseEvent<HTMLTableRowElement>, card: ScryfallCard) => {
         setHoveredCard(card);
-        setModalPosition({ x: event.clientX, y: event.clientY });
+        const span = event.currentTarget.querySelector('span');
+        if (span) {
+            const spanRect = span.getBoundingClientRect();
+            setModalPosition({ x: spanRect.right, y: spanRect.top });
+        } else {
+            setModalPosition({ x: event.clientX, y: event.clientY });
+        }
     };
 
     const handleMouseLeave = () => {
@@ -28,7 +39,7 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
     };
 
     const totalPrice = cards.reduce((total, card) => {
-        const price = parseFloat(card.prices?.usd ?? '0');
+        const price = parseFloat(card.data?.prices?.usd ?? '0');
         return total + price;
     }, 0);
 
@@ -69,18 +80,23 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                     <table className="w-full text-sm text-left">
                         {tableHeader}
                         <tbody>
-                            {firstHalf.map((card, index) => (
-                                <tr
-                                    key={card.name}
-                                    onMouseEnter={(e) => handleMouseEnter(e, card)}
-                                    onMouseLeave={handleMouseLeave}
-                                    className="cursor-pointer hover:bg-muted-foreground/20"
-                                >
-                                    <td className="px-2 py-1">{index + 1}</td>
-                                    <td className="px-2 py-1 truncate"><span className="underline text-blue-500">{card.name}</span></td>
-                                    <td className="px-2 py-1 text-right">${card.prices?.usd ?? 'N/A'}</td>
-                                </tr>
-                            ))}
+                            {firstHalf.map((card, index) => {
+                                const cardData = card.data;
+                                return (
+                                    <tr
+                                        key={card.name}
+                                        onMouseEnter={cardData ? (e) => handleMouseEnter(e, cardData) : undefined}
+                                        onMouseLeave={cardData ? handleMouseLeave : undefined}
+                                        className={cardData ? "cursor-pointer hover:bg-muted-foreground/20" : ""}
+                                    >
+                                        <td className="px-2 py-1">{index + 1}</td>
+                                        <td className="px-2 py-1 truncate">
+                                            <span className={cardData ? "underline text-blue-500" : ""}>{card.name}</span>
+                                        </td>
+                                        <td className="px-2 py-1 text-right">${cardData?.prices?.usd ?? 'N/A'}</td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                         {singleColumn && tableFooter}
                     </table>
@@ -90,18 +106,23 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                         <table className="w-full text-sm text-left">
                             {tableHeader}
                             <tbody>
-                                {secondHalf.map((card, index) => (
-                                    <tr
-                                        key={card.name}
-                                        onMouseEnter={(e) => handleMouseEnter(e, card)}
-                                        onMouseLeave={handleMouseLeave}
-                                        className="cursor-pointer hover:bg-muted-foreground/20"
-                                    >
-                                        <td className="px-2 py-1">{firstHalf.length + index + 1}</td>
-                                        <td className="px-2 py-1 truncate"><span className="underline text-blue-500">{card.name}</span></td>
-                                        <td className="px-2 py-1 text-right">${card.prices?.usd ?? 'N/A'}</td>
-                                    </tr>
-                                ))}
+                                {secondHalf.map((card, index) => {
+                                    const cardData = card.data;
+                                    return (
+                                        <tr
+                                            key={card.name}
+                                            onMouseEnter={cardData ? (e) => handleMouseEnter(e, cardData) : undefined}
+                                            onMouseLeave={cardData ? handleMouseLeave : undefined}
+                                            className={cardData ? "cursor-pointer hover:bg-muted-foreground/20" : ""}
+                                        >
+                                            <td className="px-2 py-1">{firstHalf.length + index + 1}</td>
+                                            <td className="px-2 py-1 truncate">
+                                                <span className={cardData ? "underline text-blue-500" : ""}>{card.name}</span>
+                                            </td>
+                                            <td className="px-2 py-1 text-right">${cardData?.prices?.usd ?? 'N/A'}</td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                             {tableFooter}
                         </table>
@@ -139,7 +160,7 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
 }
 
 interface DecklistPreviewProps {
-    apiResponse: ScryfallCard[] | string;
+    apiResponse: DecklistItem[] | string;
 }
 
 export function DecklistPreview({ apiResponse }: DecklistPreviewProps) {

@@ -2,11 +2,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import "./index.css";
 import { MoxfieldImporter } from "./MoxfieldImporter";
 import { useState } from "react";
-import { DecklistPreview, type ScryfallCard } from "./DecklistPreview";
+import { DecklistPreview, type DecklistItem } from "./DecklistPreview";
 
 
 export function App() {
-  const [apiResponse, setApiResponse] = useState<ScryfallCard[] | string>("");
+  const [apiResponse, setApiResponse] = useState<DecklistItem[] | string>("");
 
   return (
     <div className="container mx-auto p-8 text-center relative z-10">

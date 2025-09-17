@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { ScryfallCard } from "./DecklistPreview";
+import type { DecklistItem } from "./DecklistPreview";
 
 interface MoxfieldImporterProps {
-    setApiResponse: (response: ScryfallCard[] | string) => void;
+    setApiResponse: (response: DecklistItem[] | string) => void;
 }
 
 export function MoxfieldImporter({ setApiResponse }: MoxfieldImporterProps) {

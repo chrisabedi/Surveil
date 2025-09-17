@@ -43,13 +43,21 @@ app.post("/api/moxfield-import", async (req: Request, res: Response) => {
   const uniqueCardNames = [...new Set(cardNames)];
 
   try {
-    const cardPromises = uniqueCardNames.map(name => client.getCards({ exact: name }));
-    const cardDataStrings = await Promise.all(cardPromises);
-    const cardData = cardDataStrings
-      .filter(Boolean)
-      .map(cardString => JSON.parse(cardString!));
-    
-    return res.json(cardData);
+    const cardPromises = uniqueCardNames.map(async (name) => {
+        try {
+            const cardString = await client.getCards({ exact: name });
+            if (cardString) {
+                return { name, data: JSON.parse(cardString) };
+            }
+            return { name, data: null };
+        } catch (error) {
+            console.error(`Failed to fetch card: ${name}`, error);
+            return { name, data: null };
+        }
+    });
+
+    const results = await Promise.all(cardPromises);
+    return res.json(results);
   } catch (error) {
     console.error('Error fetching data from Scryfall:', error);
     return res.status(500).send('An error occurred while fetching card data.');
