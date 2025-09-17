@@ -2,9 +2,49 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+interface ScryfallCard {
+    name: string;
+    image_uris: {
+        small: string;
+    };
+}
+
+function CardList({ cards }: { cards: ScryfallCard[] }) {
+    const [hoveredImage, setHoveredImage] = useState<string | null>(null);
+
+    if (cards.length === 0) {
+        return <p>No cards found for the given decklist.</p>;
+    }
+
+    return (
+        <div className="flex gap-4">
+            <ul className="w-1/2 space-y-1 overflow-y-auto max-h-96 pr-2">
+                {cards.map((card) => (
+                    <li
+                        key={card.name}
+                        onMouseEnter={() => setHoveredImage(card.image_uris.small)}
+                        onMouseLeave={() => setHoveredImage(null)}
+                        className="cursor-pointer p-1 hover:bg-muted-foreground/20 rounded truncate"
+                    >
+                        {card.name}
+                    </li>
+                ))}
+            </ul>
+            <div className="w-1/2 flex items-center justify-center">
+                {hoveredImage ? (
+                    <img src={hoveredImage} alt="Card preview" className="rounded-lg shadow-lg" />
+                ) : (
+                    <div className="text-muted-foreground">Hover over a card to see its image.</div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+
 export function MoxfieldImporter() {
     const [decklist, setDecklist] = useState("");
-    const [apiResponse, setApiResponse] = useState("");
+    const [apiResponse, setApiResponse] = useState<ScryfallCard[] | string>("");
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -16,7 +56,13 @@ export function MoxfieldImporter() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ decklist: decklist }),
             });
-            const result = await response.text();
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || `Request failed with status ${response.status}`);
+            }
+
+            const result = await response.json();
             setApiResponse(result);
         } catch (error) {
             console.error('Error:', error);
@@ -44,8 +90,12 @@ export function MoxfieldImporter() {
             </form>
             {apiResponse && (
                 <div className="mt-4 p-4 border rounded bg-muted text-left">
-                    <h3 className="font-semibold">API Response:</h3>
-                    <pre className="whitespace-pre-wrap font-mono text-sm">{apiResponse}</pre>
+                    <h3 className="font-semibold mb-2">Decklist Preview:</h3>
+                    {typeof apiResponse === 'string' ? (
+                        <pre className="whitespace-pre-wrap font-mono text-sm">{apiResponse}</pre>
+                    ) : (
+                        <CardList cards={apiResponse} />
+                    )}
                 </div>
             )}
         </>
