@@ -16,6 +16,11 @@ export interface ScryfallCard {
 function CardList({ cards }: { cards: ScryfallCard[] }) {
     const [hoveredImage, setHoveredImage] = useState<string | null>(null);
 
+    const totalPrice = cards.reduce((total, card) => {
+        const price = parseFloat(card.prices?.usd ?? '0');
+        return total + price;
+    }, 0);
+
     if (cards.length === 0) {
         return <p>No cards found for the given decklist.</p>;
     }
@@ -40,10 +45,16 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                                 className="cursor-pointer hover:bg-muted-foreground/20"
                             >
                                 <td className="px-2 py-1">{index + 1}</td>
-                                <td className="px-2 py-1 truncate">{card.name} - ${card.prices?.usd ?? 'N/A'}</td>
+                                <td className="px-2 py-1 truncate"><span className="underline">{card.name}</span> - ${card.prices?.usd ?? 'N/A'}</td>
                             </tr>
                         ))}
                     </tbody>
+                    <tfoot>
+                        <tr className="font-semibold border-t">
+                            <td className="px-2 py-2 text-right">Total:</td>
+                            <td className="px-2 py-2">${totalPrice.toFixed(2)}</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             <div className="w-1/2 flex items-center justify-center">

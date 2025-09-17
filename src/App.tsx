@@ -12,17 +12,13 @@ export function App() {
     <div className="container mx-auto p-8 text-center relative z-10">
       <Card className="bg-card/50 backdrop-blur-sm border-muted">
         <CardContent className="pt-6">
-          <MoxfieldImporter setApiResponse={setApiResponse} />
+          {apiResponse ? (
+            <DecklistPreview apiResponse={apiResponse} />
+          ) : (
+            <MoxfieldImporter setApiResponse={setApiResponse} />
+          )}
         </CardContent>
       </Card>
-
-      {apiResponse && (
-        <Card className="bg-card/50 backdrop-blur-sm border-muted mt-8">
-          <CardContent className="pt-6">
-            <DecklistPreview apiResponse={apiResponse} />
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
