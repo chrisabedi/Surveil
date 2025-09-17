@@ -4,6 +4,7 @@ export interface ScryfallCard {
     name: string;
     image_uris: {
         small: string;
+        normal?: string;
     };
     prices?: {
         usd: string | null;
@@ -14,7 +15,7 @@ export interface ScryfallCard {
 }
 
 function CardList({ cards }: { cards: ScryfallCard[] }) {
-    const [hoveredImage, setHoveredImage] = useState<string | null>(null);
+    const [hoveredCard, setHoveredCard] = useState<ScryfallCard | null>(null);
 
     const totalPrice = cards.reduce((total, card) => {
         const price = parseFloat(card.prices?.usd ?? '0');
@@ -61,8 +62,7 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                             {firstHalf.map((card, index) => (
                                 <tr
                                     key={card.name}
-                                    onMouseEnter={() => setHoveredImage(card.image_uris.small)}
-                                    onClick={() => window.open(card.purchase_uris.tcgplayer, '_blank')}
+                                    onMouseEnter={() => setHoveredCard(card)}
                                     className="cursor-pointer hover:bg-muted-foreground/20"
                                 >
                                     <td className="px-2 py-1">{index + 1}</td>
@@ -82,8 +82,7 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                                 {secondHalf.map((card, index) => (
                                     <tr
                                         key={card.name}
-                                        onMouseEnter={() => setHoveredImage(card.image_uris.small)}
-                                        onClick={() => window.open(card.purchase_uris.tcgplayer, '_blank')}
+                                        onMouseEnter={() => setHoveredCard(card)}
                                         className="cursor-pointer hover:bg-muted-foreground/20"
                                     >
                                         <td className="px-2 py-1">{firstHalf.length + index + 1}</td>
@@ -98,9 +97,22 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                 )}
             </div>
 
-            {hoveredImage && (
+            {hoveredCard && (
                 <div className="fixed top-1/2 right-8 transform -translate-y-1/2 z-50 pointer-events-none">
-                    <img src={hoveredImage} alt="Card preview" className="rounded-lg shadow-2xl w-64" />
+                    <div className="bg-card/50 backdrop-blur-sm border border-muted rounded-xl shadow-2xl p-2 pointer-events-auto w-fit">
+                        <picture>
+                            <source media="(min-width: 768px)" srcSet={hoveredCard.image_uris.normal || hoveredCard.image_uris.small} />
+                            <img src={hoveredCard.image_uris.small} alt="Card preview" className="rounded-lg w-64 md:w-auto md:max-w-xs" />
+                        </picture>
+                        <a
+                            href={hoveredCard.purchase_uris.tcgplayer}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block text-center mt-2 text-blue-500 underline"
+                        >
+                            View on TCGPlayer
+                        </a>
+                    </div>
                 </div>
             )}
         </div>
