@@ -5,7 +5,7 @@ export interface ScryfallCard {
     image_uris: {
         small: string;
     };
-    prices: {
+    prices?: {
         usd: string | null;
     };
     purchase_uris: {
@@ -40,7 +40,7 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                                 className="cursor-pointer hover:bg-muted-foreground/20"
                             >
                                 <td className="px-2 py-1">{index + 1}</td>
-                                <td className="px-2 py-1 truncate">{card.name} - ${card.prices.usd ?? 'N/A'}</td>
+                                <td className="px-2 py-1 truncate">{card.name} - ${card.prices?.usd ?? 'N/A'}</td>
                             </tr>
                         ))}
                     </tbody>
