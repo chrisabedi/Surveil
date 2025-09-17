@@ -23,7 +23,7 @@ export function App() {
 
       <Card className="bg-card/50 backdrop-blur-sm border-muted">
         <CardContent className="pt-6">
-          <h1 className="text-5xl font-bold my-4 leading-tight">Bun + React</h1>
+          <h1 className="text-5xl font-bold my-4 leading-tight">Surveil</h1>
           <p>
             Edit{" "}
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">src/App.tsx</code> and
