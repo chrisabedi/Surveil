@@ -4,7 +4,7 @@ import "./index.css";
 
 import logo from "./logo.svg";
 import reactLogo from "./react.svg";
-import { Input } from "./components/ui/input";
+import { MoxfieldImporter } from "./MoxfieldImporter";
 
 export function App() {
   return (
@@ -36,11 +36,7 @@ export function App() {
       </Card>
       <Card className="bg-card/50 backdrop-blur-sm border-muted">
         <CardContent className="pt-6">
-          <h1 className="text-5xl font-bold my-4 leading-tight">moxfield</h1>
-          <p>
-          <Input/>
-          </p>
-          <APITester />
+          <MoxfieldImporter />
         </CardContent>
       </Card>
     </div>
