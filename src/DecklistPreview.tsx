@@ -27,8 +27,7 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                     <thead className="text-xs text-muted-foreground uppercase">
                         <tr>
                             <th scope="col" className="px-2 py-2 w-8">#</th>
-                            <th scope="col" className="px-2 py-2">Name</th>
-                            <th scope="col" className="px-2 py-2 text-right">Price (USD)</th>
+                            <th scope="col" className="px-2 py-2">Name & Price (USD)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,8 +40,7 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
                                 className="cursor-pointer hover:bg-muted-foreground/20"
                             >
                                 <td className="px-2 py-1">{index + 1}</td>
-                                <td className="px-2 py-1 truncate">{card.name}</td>
-                                <td className="px-2 py-1 text-right">${card.prices.usd ?? 'N/A'}</td>
+                                <td className="px-2 py-1 truncate">{card.name} - ${card.prices.usd ?? 'N/A'}</td>
                             </tr>
                         ))}
                     </tbody>
