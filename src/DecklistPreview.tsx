@@ -5,6 +5,12 @@ export interface ScryfallCard {
     image_uris: {
         small: string;
     };
+    prices: {
+        usd: string | null;
+    };
+    purchase_uris: {
+        tcgplayer: string;
+    };
 }
 
 function CardList({ cards }: { cards: ScryfallCard[] }) {
@@ -16,18 +22,32 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
 
     return (
         <div className="flex gap-4">
-            <ul className="w-1/2 space-y-1 overflow-y-auto max-h-96 pr-2">
-                {cards.map((card) => (
-                    <li
-                        key={card.name}
-                        onMouseEnter={() => setHoveredImage(card.image_uris.small)}
-                        onMouseLeave={() => setHoveredImage(null)}
-                        className="cursor-pointer p-1 hover:bg-muted-foreground/20 rounded truncate"
-                    >
-                        {card.name}
-                    </li>
-                ))}
-            </ul>
+            <div className="w-1/2 space-y-1 overflow-y-auto max-h-96 pr-2">
+                <table className="w-full text-sm text-left">
+                    <thead className="text-xs text-muted-foreground uppercase">
+                        <tr>
+                            <th scope="col" className="px-2 py-2 w-8">#</th>
+                            <th scope="col" className="px-2 py-2">Name</th>
+                            <th scope="col" className="px-2 py-2 text-right">Price (USD)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {cards.map((card, index) => (
+                            <tr
+                                key={card.name}
+                                onMouseEnter={() => setHoveredImage(card.image_uris.small)}
+                                onMouseLeave={() => setHoveredImage(null)}
+                                onClick={() => window.open(card.purchase_uris.tcgplayer, '_blank')}
+                                className="cursor-pointer hover:bg-muted-foreground/20"
+                            >
+                                <td className="px-2 py-1">{index + 1}</td>
+                                <td className="px-2 py-1 truncate">{card.name}</td>
+                                <td className="px-2 py-1 text-right">${card.prices.usd ?? 'N/A'}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
             <div className="w-1/2 flex items-center justify-center">
                 {hoveredImage ? (
                     <img src={hoveredImage} alt="Card preview" className="rounded-lg shadow-lg" />
