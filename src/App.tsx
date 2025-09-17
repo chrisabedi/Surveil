@@ -10,7 +10,7 @@ export function App() {
 
   return (
     <div className="container mx-auto p-8 text-center relative z-10">
-      <Card className="bg-card/50 backdrop-blur-sm border-muted">
+      <Card className="bg-card/50 backdrop-blur-sm border-muted w-full max-w-6xl mx-auto">
         <CardContent className="pt-6">
           {apiResponse ? (
             <DecklistPreview apiResponse={apiResponse} />

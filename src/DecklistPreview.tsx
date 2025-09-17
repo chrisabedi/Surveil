@@ -25,46 +25,84 @@ function CardList({ cards }: { cards: ScryfallCard[] }) {
         return <p>No cards found for the given decklist.</p>;
     }
 
+    const columnThreshold = 15;
+    const singleColumn = cards.length <= columnThreshold;
+
+    const halfwayIndex = Math.ceil(cards.length / 2);
+    const firstHalf = singleColumn ? cards : cards.slice(0, halfwayIndex);
+    const secondHalf = singleColumn ? [] : cards.slice(halfwayIndex);
+
+    const tableHeader = (
+        <thead className="text-xs text-muted-foreground uppercase">
+            <tr>
+                <th scope="col" className="px-2 py-2 w-8">#</th>
+                <th scope="col" className="px-2 py-2">Name</th>
+                <th scope="col" className="px-2 py-2 text-right">Price (USD)</th>
+            </tr>
+        </thead>
+    );
+
+    const tableFooter = (
+        <tfoot>
+            <tr className="font-semibold border-t">
+                <td colSpan="2" className="px-2 py-2 text-right">Total:</td>
+                <td className="px-2 py-2 text-right">${totalPrice.toFixed(2)}</td>
+            </tr>
+        </tfoot>
+    );
+
     return (
-        <div className="flex gap-4">
-            <div className="w-1/2 space-y-1 overflow-y-auto max-h-96 pr-2">
-                <table className="w-full text-sm text-left">
-                    <thead className="text-xs text-muted-foreground uppercase">
-                        <tr>
-                            <th scope="col" className="px-2 py-2 w-8">#</th>
-                            <th scope="col" className="px-2 py-2">Name</th>
-                            <th scope="col" className="px-2 py-2 text-right">Price (USD)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {cards.map((card, index) => (
-                            <tr
-                                key={card.name}
-                                onMouseEnter={() => setHoveredImage(card.image_uris.small)}
-                                onClick={() => window.open(card.purchase_uris.tcgplayer, '_blank')}
-                                className="cursor-pointer hover:bg-muted-foreground/20"
-                            >
-                                <td className="px-2 py-1">{index + 1}</td>
-                                <td className="px-2 py-1 truncate"><span className="underline text-blue-500">{card.name}</span></td>
-                                <td className="px-2 py-1 text-right">${card.prices?.usd ?? 'N/A'}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                    <tfoot>
-                        <tr className="font-semibold border-t">
-                            <td colSpan="2" className="px-2 py-2 text-right">Total:</td>
-                            <td className="px-2 py-2 text-right">${totalPrice.toFixed(2)}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div className="w-1/2 flex items-center justify-center">
-                {hoveredImage ? (
-                    <img src={hoveredImage} alt="Card preview" className="rounded-lg shadow-lg" />
-                ) : (
-                    <div className="text-muted-foreground">Hover over a card to see its image.</div>
+        <div>
+            <div className="flex gap-x-8">
+                <div className={`space-y-1 overflow-y-auto max-h-[60vh] pr-2 ${singleColumn ? "w-full" : "w-1/2"}`}>
+                    <table className="w-full text-sm text-left">
+                        {tableHeader}
+                        <tbody>
+                            {firstHalf.map((card, index) => (
+                                <tr
+                                    key={card.name}
+                                    onMouseEnter={() => setHoveredImage(card.image_uris.small)}
+                                    onClick={() => window.open(card.purchase_uris.tcgplayer, '_blank')}
+                                    className="cursor-pointer hover:bg-muted-foreground/20"
+                                >
+                                    <td className="px-2 py-1">{index + 1}</td>
+                                    <td className="px-2 py-1 truncate"><span className="underline text-blue-500">{card.name}</span></td>
+                                    <td className="px-2 py-1 text-right">${card.prices?.usd ?? 'N/A'}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                        {singleColumn && tableFooter}
+                    </table>
+                </div>
+                {!singleColumn && (
+                    <div className="w-1/2 space-y-1 overflow-y-auto max-h-[60vh] pr-2">
+                        <table className="w-full text-sm text-left">
+                            {tableHeader}
+                            <tbody>
+                                {secondHalf.map((card, index) => (
+                                    <tr
+                                        key={card.name}
+                                        onMouseEnter={() => setHoveredImage(card.image_uris.small)}
+                                        onClick={() => window.open(card.purchase_uris.tcgplayer, '_blank')}
+                                        className="cursor-pointer hover:bg-muted-foreground/20"
+                                    >
+                                        <td className="px-2 py-1">{firstHalf.length + index + 1}</td>
+                                        <td className="px-2 py-1 truncate"><span className="underline text-blue-500">{card.name}</span></td>
+                                        <td className="px-2 py-1 text-right">${card.prices?.usd ?? 'N/A'}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                            {tableFooter}
+                        </table>
+                    </div>
                 )}
             </div>
+
+            {hoveredImage && (
+                <div className="fixed top-1/2 right-8 transform -translate-y-1/2 z-50 pointer-events-none">
+                    <img src={hoveredImage} alt="Card preview" className="rounded-lg shadow-2xl w-64" />
+                </div>
+            )}
         </div>
     );
 }
