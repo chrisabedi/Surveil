@@ -1,20 +1,15 @@
-import { Card, CardContent } from "@/components/ui/card";
 import "./index.css";
 import { MoxfieldImporter } from "./MoxfieldImporter";
 import { useState, useEffect } from "react";
 import { DecklistPreview, type DecklistItem } from "./DecklistPreview";
-import { Header } from "./Header";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Sidebar } from "./Sidebar";
+import { Menu } from "lucide-react";
 
 
 export function App() {
@@ -76,6 +71,15 @@ export function App() {
     }
   };
 
+  const sidebarProps = {
+    decklistHistory,
+    handleQuickImport,
+    quickImportUrl,
+    setQuickImportUrl,
+    isQuickImporting,
+    setApiResponse,
+  };
+
   return (
     <>
       <div className="background-container">
@@ -83,58 +87,41 @@ export function App() {
           className="background-image"
         />
       </div>
-      <Header />
-      <div className="container mx-auto p-4 md:p-8 relative z-10 pt-24">
-        <div className="max-w-6xl mx-auto">
-          <main className="text-center">
-            {apiResponse ? (
-              <DecklistPreview apiResponse={apiResponse} />
-            ) : (
-              <MoxfieldImporter setApiResponse={setApiResponse} />
-            )}
+      <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+        <div className="hidden border-r bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/60 md:block">
+          <Sidebar {...sidebarProps} />
+        </div>
+        <div className="flex flex-col">
+          <header className="flex h-14 items-center gap-4 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:h-[60px] lg:px-6 sticky top-0 z-10">
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0 md:hidden"
+                >
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle navigation menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0">
+                 <Sidebar {...sidebarProps} />
+              </SheetContent>
+            </Sheet>
+          </header>
+          <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 overflow-auto">
+            <div className="max-w-6xl mx-auto w-full">
+                <div className="text-center">
+                  {apiResponse ? (
+                    <DecklistPreview apiResponse={apiResponse} />
+                  ) : (
+                    <MoxfieldImporter setApiResponse={setApiResponse} />
+                  )}
+                </div>
+            </div>
           </main>
         </div>
       </div>
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetTrigger asChild>
-          <Button className="fixed top-28 right-8 z-20">
-            History
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="right">
-          <SheetHeader>
-            <SheetTitle className="text-center">Surveil</SheetTitle>
-          </SheetHeader>
-          <div className="py-4 space-y-8">
-            <form onSubmit={handleQuickImport} className="space-y-2">
-              <Label htmlFor="quick-import">Add another decklist</Label>
-              <Input
-                id="quick-import"
-                placeholder="Paste Moxfield URL..."
-                value={quickImportUrl}
-                onChange={(e) => setQuickImportUrl(e.target.value)}
-                disabled={isQuickImporting}
-              />
-              <Button type="submit" className="w-full" disabled={isQuickImporting}>
-                {isQuickImporting ? 'Importing...' : 'Import'}
-              </Button>
-            </form>
-            <div className="grid gap-4">
-              {decklistHistory.map((decklist, index) => (
-                <SheetClose asChild key={index}>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={() => setApiResponse(decklist)}
-                  >
-                    {decklist[0]?.data?.name || `Decklist ${index + 1}`}
-                  </Button>
-                </SheetClose>
-              ))}
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
     </>
   );
 }
