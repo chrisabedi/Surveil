@@ -1,5 +1,10 @@
-import { useState, useRef, Fragment } from "react";
+import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export interface ScryfallCard {
     name: string;
@@ -21,21 +26,6 @@ export interface DecklistItem {
 }
 
 function CardList({ cards }: { cards: DecklistItem[] }) {
-    const [hoveredCard, setHoveredCard] = useState<ScryfallCard | null>(null);
-    const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
-    const hideTimer = useRef<number>();
-
-    const handleMouseEnter = (event: React.MouseEvent<HTMLTableRowElement>, card: ScryfallCard) => {
-        clearTimeout(hideTimer.current);
-        setHoveredCard(card);
-        setModalPosition({ x: event.clientX, y: event.clientY });
-    };
-
-    const handleMouseLeave = () => {
-        hideTimer.current = window.setTimeout(() => {
-            setHoveredCard(null);
-        }, 100);
-    };
 
     const totalPrice = cards.reduce((total, card) => {
         const price = parseFloat(card.data?.prices?.usd ?? '0');
@@ -85,19 +75,47 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                         {column.map((card, index) => {
                                             const cardData = card.data;
                                             const overallIndex = colIndex === 0 ? index : firstHalf.length + index;
+                                            if (!cardData) {
+                                                return (
+                                                    <tr key={card.name} className="border-b border-white/5 opacity-50">
+                                                        <td className="p-3">{overallIndex + 1}</td>
+                                                        <td className="p-3 truncate">
+                                                            <span>{card.name}</span>
+                                                        </td>
+                                                        <td className="p-3 text-right">N/A</td>
+                                                    </tr>
+                                                );
+                                            }
                                             return (
-                                                <tr
-                                                    key={card.name}
-                                                    onMouseEnter={cardData ? (e) => handleMouseEnter(e, cardData) : undefined}
-                                                    onMouseLeave={cardData ? handleMouseLeave : undefined}
-                                                    className={`border-b border-white/5 transition-colors ${cardData ? "cursor-pointer hover:bg-white/10" : "opacity-50"}`}
-                                                >
-                                                    <td className="p-3">{overallIndex + 1}</td>
-                                                    <td className="p-3 truncate">
-                                                        <span className={cardData ? "text-primary" : ""}>{card.name}</span>
-                                                    </td>
-                                                    <td className="p-3 text-right">${cardData?.prices?.usd ?? 'N/A'}</td>
-                                                </tr>
+                                                <HoverCard key={card.name} openDelay={100} closeDelay={50}>
+                                                    <HoverCardTrigger asChild>
+                                                        <tr
+                                                            className={`border-b border-white/5 transition-colors cursor-pointer hover:bg-white/10`}
+                                                        >
+                                                            <td className="p-3">{overallIndex + 1}</td>
+                                                            <td className="p-3 truncate">
+                                                                <span className="text-primary">{card.name}</span>
+                                                            </td>
+                                                            <td className="p-3 text-right">${cardData.prices?.usd ?? 'N/A'}</td>
+                                                        </tr>
+                                                    </HoverCardTrigger>
+                                                    <HoverCardContent side="right" align="start" className="w-fit p-2 border-white/10 bg-card/80 backdrop-blur-lg">
+                                                        <picture>
+                                                            <source media="(min-width: 768px)" srcSet={cardData.image_uris?.normal || cardData.image_uris?.small} />
+                                                            <img src={cardData.image_uris?.small} alt="Card preview" className="rounded-lg w-64 md:w-auto md:max-w-xs" />
+                                                        </picture>
+                                                        <Button
+                                                            as="a"
+                                                            href={cardData.purchase_uris.tcgplayer}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="w-full mt-2"
+                                                            size="sm"
+                                                        >
+                                                            View on TCGPlayer
+                                                        </Button>
+                                                    </HoverCardContent>
+                                                </HoverCard>
                                             );
                                         })}
                                     </tbody>
@@ -109,37 +127,6 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                 ))}
             </div>
 
-            {hoveredCard && (
-                <div
-                    className="fixed z-50 pointer-events-none"
-                    style={{
-                        top: `${modalPosition.y}`,
-                        left: `${modalPosition.x}`,
-                        transform: "translate(20px, 20px)",
-                    }}
-                >
-                    <div
-                        className="bg-card/80 backdrop-blur-lg border border-white/10 rounded-xl shadow-2xl p-2 w-fit pointer-events-auto"
-                        onMouseEnter={() => clearTimeout(hideTimer.current)}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        <picture>
-                            <source media="(min-width: 768px)" srcSet={hoveredCard.image_uris?.normal || hoveredCard.image_uris?.small} />
-                            <img src={hoveredCard.image_uris?.small} alt="Card preview" className="rounded-lg w-64 md:w-auto md:max-w-xs" />
-                        </picture>
-                        <Button
-                            as="a"
-                            href={hoveredCard.purchase_uris?.tcgplayer}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full mt-2"
-                            size="sm"
-                        >
-                            View on TCGPlayer
-                        </Button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
