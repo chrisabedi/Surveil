@@ -15,7 +15,7 @@ export interface ScryfallCard {
     prices?: {
         usd: string | null;
     };
-    purchase_uris: {
+    purchase_uris?: {
         tcgplayer: string;
     };
 }
@@ -106,7 +106,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                                         </picture>
                                                         <Button
                                                             as="a"
-                                                            href={cardData.purchase_uris.tcgplayer}
+                                                            href={cardData.purchase_uris?.tcgplayer}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             className="w-full mt-2"
