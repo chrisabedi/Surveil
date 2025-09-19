@@ -18,11 +18,43 @@ export interface ScryfallCard {
     purchase_uris?: {
         tcgplayer: string;
     };
+    mana_cost?: string;
+    cmc?: number;
 }
 
 export interface DecklistItem {
     name: string;
     data: ScryfallCard | null;
+}
+
+function ManaCost({ manaCost }: { manaCost: string | undefined }) {
+    if (!manaCost) {
+        return null;
+    }
+
+    const symbols = manaCost.match(/\{(.+?)\}/g);
+
+    if (!symbols) {
+        return <span className="ml-2">{manaCost}</span>; // Fallback for unexpected formats
+    }
+
+    return (
+        <span className="inline-flex items-center gap-x-0.5 ml-2 align-middle">
+            {symbols.map((symbol, index) => {
+                const symbolCode = symbol.replace(/\{|\}/g, '').toLowerCase().replace('/', '');
+                const imageUrl = `https://svgs.scryfall.io/card-symbols/${symbolCode}.svg`;
+                return (
+                    <img
+                        key={index}
+                        src={imageUrl}
+                        alt={symbol}
+                        className="w-4 h-4"
+                        title={symbol}
+                    />
+                );
+            })}
+        </span>
+    );
 }
 
 function CardList({ cards }: { cards: DecklistItem[] }) {
@@ -94,7 +126,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                                         >
                                                             <td className="p-3">{overallIndex + 1}</td>
                                                             <td className="p-3 truncate">
-                                                                <span className="text-primary">{card.name}</span>
+                                                                <span className="text-primary">{card.name}</span><ManaCost manaCost={cardData.mana_cost} />
                                                             </td>
                                                             <td className="p-3 text-right">${cardData.prices?.usd ?? 'N/A'}</td>
                                                         </tr>
