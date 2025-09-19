@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 export function App() {
   const [apiResponse, setApiResponse] = useState<DecklistItem[] | string>("");
   const [decklistHistory, setDecklistHistory] = useState<(DecklistItem[])[]>([]);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   useEffect(() => {
     const storedHistory = localStorage.getItem('decklistHistory');
@@ -35,6 +36,7 @@ export function App() {
 
   useEffect(() => {
     if (Array.isArray(apiResponse) && apiResponse.length > 0) {
+        setIsSheetOpen(false);
         setDecklistHistory(prevHistory => {
             const responseStr = JSON.stringify(apiResponse);
             const newHistory = [
@@ -56,28 +58,31 @@ export function App() {
       </div>
       <Header />
       <div className="container mx-auto p-4 md:p-8 relative z-10 pt-24">
-        <Sheet>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger asChild>
-            <Button className="absolute top-28 right-8 z-20">
-              Deck History
+            <Button className="absolute top-28 left-8 z-20">
+              Surveil
             </Button>
           </SheetTrigger>
-          <SheetContent>
+          <SheetContent side="left">
             <SheetHeader>
               <SheetTitle className="text-center">Surveil</SheetTitle>
             </SheetHeader>
-            <div className="grid gap-4 py-4">
-              {decklistHistory.map((decklist, index) => (
-                <SheetClose asChild key={index}>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={() => setApiResponse(decklist)}
-                  >
-                    {decklist[0]?.data?.name || `Decklist ${index + 1}`}
-                  </Button>
-                </SheetClose>
-              ))}
+            <div className="py-4 space-y-8">
+              <MoxfieldImporter setApiResponse={setApiResponse} />
+              <div className="grid gap-4">
+                {decklistHistory.map((decklist, index) => (
+                  <SheetClose asChild key={index}>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      onClick={() => setApiResponse(decklist)}
+                    >
+                      {decklist[0]?.data?.name || `Decklist ${index + 1}`}
+                    </Button>
+                  </SheetClose>
+                ))}
+              </div>
             </div>
           </SheetContent>
         </Sheet>
@@ -86,7 +91,9 @@ export function App() {
             {apiResponse ? (
               <DecklistPreview apiResponse={apiResponse} />
             ) : (
-              <MoxfieldImporter setApiResponse={setApiResponse} />
+                <div className="flex items-center justify-center h-[60vh]">
+                    <p className="text-muted-foreground text-lg">Import a decklist to get started using the Surveil panel.</p>
+                </div>
             )}
           </main>
         </div>
