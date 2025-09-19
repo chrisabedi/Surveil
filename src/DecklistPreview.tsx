@@ -6,6 +6,15 @@ import {
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
 
+export interface CardFace {
+    name: string;
+    mana_cost: string;
+    image_uris?: {
+        small: string;
+        normal?: string;
+    };
+}
+
 export interface ScryfallCard {
     name: string;
     image_uris?: {
@@ -20,6 +29,7 @@ export interface ScryfallCard {
     };
     mana_cost?: string;
     cmc?: number;
+    card_faces?: CardFace[];
 }
 
 export interface DecklistItem {
@@ -113,7 +123,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                 >
                     <div className="p-4" onClick={(e) => e.stopPropagation()}>
                         <img 
-                            src={selectedCard.image_uris?.normal || selectedCard.image_uris?.small} 
+                            src={selectedCard.card_faces?.[0]?.image_uris?.normal || selectedCard.card_faces?.[0]?.image_uris?.small || selectedCard.image_uris?.normal || selectedCard.image_uris?.small} 
                             alt={selectedCard.name} 
                             className="rounded-lg max-w-[80vw] max-h-[80vh]" 
                         />
@@ -166,7 +176,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                                             <span className="text-primary">{card.name}</span>
                                                         </td>
                                                         <td className="p-3 text-right">
-                                                            <ManaCost manaCost={cardData.mana_cost} />
+                                                            <ManaCost manaCost={cardData.card_faces?.[0]?.mana_cost || cardData.mana_cost} />
                                                         </td>
                                                         <td className="p-3 text-right">${cardData.prices?.usd ?? 'N/A'}</td>
                                                     </tr>
@@ -184,15 +194,15 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                                                 <span className="text-primary">{card.name}</span>
                                                             </td>
                                                             <td className="p-3 text-right">
-                                                                <ManaCost manaCost={cardData.mana_cost} />
+                                                                <ManaCost manaCost={cardData.card_faces?.[0]?.mana_cost || cardData.mana_cost} />
                                                             </td>
                                                             <td className="p-3 text-right">${cardData.prices?.usd ?? 'N/A'}</td>
                                                         </tr>
                                                     </HoverCardTrigger>
                                                     <HoverCardContent side="right" align="start" className="w-fit p-2 border-white/10 bg-card/80 backdrop-blur-lg">
                                                         <picture>
-                                                            <source media="(min-width: 768px)" srcSet={cardData.image_uris?.normal || cardData.image_uris?.small} />
-                                                            <img src={cardData.image_uris?.small} alt="Card preview" className="rounded-lg w-64 md:w-auto md:max-w-xs" />
+                                                            <source media="(min-width: 768px)" srcSet={(cardData.card_faces?.[0]?.image_uris || cardData.image_uris)?.normal || (cardData.card_faces?.[0]?.image_uris || cardData.image_uris)?.small} />
+                                                            <img src={(cardData.card_faces?.[0]?.image_uris || cardData.image_uris)?.small} alt="Card preview" className="rounded-lg w-64 md:w-auto md:max-w-xs" />
                                                         </picture>
                                                         <Button
                                                             as="a"
