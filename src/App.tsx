@@ -13,12 +13,16 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 
 export function App() {
   const [apiResponse, setApiResponse] = useState<DecklistItem[] | string>("");
   const [decklistHistory, setDecklistHistory] = useState<(DecklistItem[])[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [quickImportUrl, setQuickImportUrl] = useState("");
+  const [isQuickImporting, setIsQuickImporting] = useState(false);
 
   useEffect(() => {
     const storedHistory = localStorage.getItem('decklistHistory');
@@ -49,6 +53,29 @@ export function App() {
     }
   }, [apiResponse]);
 
+  const handleQuickImport = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!quickImportUrl) return;
+
+    setIsQuickImporting(true);
+    try {
+        const response = await fetch('/api/moxfield', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ decklist: quickImportUrl }),
+        });
+        const data = await response.json();
+        setApiResponse(data);
+        setQuickImportUrl('');
+    } catch (error) {
+        console.error("Quick import failed:", error);
+    } finally {
+        setIsQuickImporting(false);
+    }
+  };
+
   return (
     <>
       <div className="background-container">
@@ -58,46 +85,56 @@ export function App() {
       </div>
       <Header />
       <div className="container mx-auto p-4 md:p-8 relative z-10 pt-24">
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetTrigger asChild>
-            <Button className="absolute top-28 left-8 z-20">
-              Surveil
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left">
-            <SheetHeader>
-              <SheetTitle className="text-center">Surveil</SheetTitle>
-            </SheetHeader>
-            <div className="py-4 space-y-8">
-              <MoxfieldImporter setApiResponse={setApiResponse} />
-              <div className="grid gap-4">
-                {decklistHistory.map((decklist, index) => (
-                  <SheetClose asChild key={index}>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start"
-                      onClick={() => setApiResponse(decklist)}
-                    >
-                      {decklist[0]?.data?.name || `Decklist ${index + 1}`}
-                    </Button>
-                  </SheetClose>
-                ))}
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
         <div className="max-w-6xl mx-auto">
           <main className="text-center">
             {apiResponse ? (
               <DecklistPreview apiResponse={apiResponse} />
             ) : (
-                <div className="flex items-center justify-center h-[60vh]">
-                    <p className="text-muted-foreground text-lg">Import a decklist to get started using the Surveil panel.</p>
-                </div>
+              <MoxfieldImporter setApiResponse={setApiResponse} />
             )}
           </main>
         </div>
       </div>
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetTrigger asChild>
+          <Button className="fixed top-28 right-8 z-20">
+            History
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right">
+          <SheetHeader>
+            <SheetTitle className="text-center">Surveil</SheetTitle>
+          </SheetHeader>
+          <div className="py-4 space-y-8">
+            <form onSubmit={handleQuickImport} className="space-y-2">
+              <Label htmlFor="quick-import">Add another decklist</Label>
+              <Input
+                id="quick-import"
+                placeholder="Paste Moxfield URL..."
+                value={quickImportUrl}
+                onChange={(e) => setQuickImportUrl(e.target.value)}
+                disabled={isQuickImporting}
+              />
+              <Button type="submit" className="w-full" disabled={isQuickImporting}>
+                {isQuickImporting ? 'Importing...' : 'Import'}
+              </Button>
+            </form>
+            <div className="grid gap-4">
+              {decklistHistory.map((decklist, index) => (
+                <SheetClose asChild key={index}>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => setApiResponse(decklist)}
+                  >
+                    {decklist[0]?.data?.name || `Decklist ${index + 1}`}
+                  </Button>
+                </SheetClose>
+              ))}
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </>
   );
 }
