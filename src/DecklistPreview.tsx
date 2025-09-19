@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
     HoverCard,
@@ -58,6 +58,15 @@ function ManaCost({ manaCost }: { manaCost: string | undefined }) {
 }
 
 function CardList({ cards }: { cards: DecklistItem[] }) {
+    const [isMobile, setIsMobile] = useState(false);
+    const [selectedCard, setSelectedCard] = useState<ScryfallCard | null>(null);
+
+    useEffect(() => {
+        const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
+        checkIsMobile();
+        window.addEventListener('resize', checkIsMobile);
+        return () => window.removeEventListener('resize', checkIsMobile);
+    }, []);
 
     const totalPrice = cards.reduce((total, card) => {
         const price = parseFloat(card.data?.prices?.usd ?? '0');
@@ -97,6 +106,30 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
 
     return (
         <div>
+            {selectedCard && (
+                <div
+                    className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+                    onClick={() => setSelectedCard(null)}
+                >
+                    <div className="p-4" onClick={(e) => e.stopPropagation()}>
+                        <img 
+                            src={selectedCard.image_uris?.small} 
+                            alt={selectedCard.name} 
+                            className="rounded-lg max-w-[80vw] max-h-[80vh]" 
+                        />
+                        <Button
+                            as="a"
+                            href={selectedCard.purchase_uris?.tcgplayer}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full mt-2"
+                            size="sm"
+                        >
+                            View on TCGPlayer
+                        </Button>
+                    </div>
+                </div>
+            )}
             <div className="flex flex-col md:flex-row gap-x-8">
                 {[firstHalf, secondHalf].map((column, colIndex) => (
                     <Fragment key={colIndex}>
@@ -120,6 +153,26 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                                     </tr>
                                                 );
                                             }
+
+                                            if (isMobile) {
+                                                return (
+                                                    <tr
+                                                        key={card.name}
+                                                        className={`border-b border-white/5 transition-colors cursor-pointer hover:bg-white/10`}
+                                                        onClick={() => setSelectedCard(cardData)}
+                                                    >
+                                                        <td className="p-3">{overallIndex + 1}</td>
+                                                        <td className="p-3 truncate">
+                                                            <span className="text-primary">{card.name}</span>
+                                                        </td>
+                                                        <td className="p-3 text-right">
+                                                            <ManaCost manaCost={cardData.mana_cost} />
+                                                        </td>
+                                                        <td className="p-3 text-right">${cardData.prices?.usd ?? 'N/A'}</td>
+                                                    </tr>
+                                                );
+                                            }
+
                                             return (
                                                 <HoverCard key={card.name} openDelay={100} closeDelay={50}>
                                                     <HoverCardTrigger asChild>
