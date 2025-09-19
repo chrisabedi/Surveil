@@ -83,8 +83,8 @@ export function App() {
         />
       </div>
       <div className="w-full">
-        <div className="flex flex-col min-h-screen">
-          <header className="flex h-14 items-center gap-4 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:h-[60px] lg:px-6 sticky top-0 z-10">
+        <div className="flex flex-col h-screen">
+          <header className="flex h-14 items-center gap-4 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:h-[60px] lg:px-6 z-10">
             <Button
               variant="outline"
               size="icon"
@@ -98,22 +98,24 @@ export function App() {
                 Surveil
             </h1>
           </header>
-          {isSidebarOpen && (
-            <div className="border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4">
-              <Sidebar {...sidebarProps} />
-            </div>
-          )}
-          <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 overflow-auto">
-            <div className="max-w-6xl mx-auto w-full">
-                <div className="text-center">
-                  {apiResponse ? (
-                    <DecklistPreview apiResponse={apiResponse} />
-                  ) : (
-                    <MoxfieldImporter setApiResponse={setApiResponse} />
-                  )}
-                </div>
-            </div>
-          </main>
+          <div className="flex flex-1 overflow-hidden">
+            {isSidebarOpen && (
+              <aside className="w-1/3 border-r bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4 overflow-y-auto">
+                <Sidebar {...sidebarProps} />
+              </aside>
+            )}
+            <main className={`${isSidebarOpen ? 'w-2/3' : 'w-full'} overflow-y-auto`}>
+              <div className="max-w-6xl mx-auto w-full p-4 lg:p-6">
+                  <div className="text-center">
+                    {apiResponse ? (
+                      <DecklistPreview apiResponse={apiResponse} />
+                    ) : (
+                      <MoxfieldImporter setApiResponse={setApiResponse} />
+                    )}
+                  </div>
+              </div>
+            </main>
+          </div>
         </div>
       </div>
     </>

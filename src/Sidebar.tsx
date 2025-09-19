@@ -35,7 +35,7 @@ export function Sidebar({
                         value={sidebarDecklist}
                         onChange={(e) => setSidebarDecklist(e.target.value)}
                         disabled={isSidebarImporting}
-                        className="min-h-[200px]"
+                        className="min-h-[150px]"
                     />
                     <Button type="submit" className="w-full" disabled={isSidebarImporting}>
                         {isSidebarImporting ? 'Importing...' : 'Import'}
