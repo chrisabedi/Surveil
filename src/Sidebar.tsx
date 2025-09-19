@@ -1,24 +1,24 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import type { DecklistItem } from "./DecklistPreview";
 
 interface SidebarProps {
   decklistHistory: (DecklistItem[])[];
-  handleQuickImport: (event: React.FormEvent) => Promise<void>;
-  quickImportUrl: string;
-  setQuickImportUrl: (url: string) => void;
-  isQuickImporting: boolean;
+  handleSidebarImport: (event: React.FormEvent) => Promise<void>;
+  sidebarDecklist: string;
+  setSidebarDecklist: (decklist: string) => void;
+  isSidebarImporting: boolean;
   setApiResponse: (response: DecklistItem[] | string) => void;
   className?: string;
 }
 
 export function Sidebar({
   decklistHistory,
-  handleQuickImport,
-  quickImportUrl,
-  setQuickImportUrl,
-  isQuickImporting,
+  handleSidebarImport,
+  sidebarDecklist,
+  setSidebarDecklist,
+  isSidebarImporting,
   setApiResponse,
   className,
 }: SidebarProps) {
@@ -27,17 +27,18 @@ export function Sidebar({
       <div className="flex h-full max-h-screen flex-col">
         <div className="flex-1 overflow-auto py-4">
             <nav className="grid items-start px-4 text-sm font-medium space-y-4">
-                <form onSubmit={handleQuickImport} className="space-y-2">
-                    <Label htmlFor="quick-import">Add another decklist</Label>
-                    <Input
-                        id="quick-import"
-                        placeholder="Paste Moxfield URL..."
-                        value={quickImportUrl}
-                        onChange={(e) => setQuickImportUrl(e.target.value)}
-                        disabled={isQuickImporting}
+                <form onSubmit={handleSidebarImport} className="space-y-2">
+                    <Label htmlFor="sidebar-import">Add another decklist</Label>
+                    <Textarea
+                        id="sidebar-import"
+                        placeholder="Paste your decklist here..."
+                        value={sidebarDecklist}
+                        onChange={(e) => setSidebarDecklist(e.target.value)}
+                        disabled={isSidebarImporting}
+                        className="min-h-[200px]"
                     />
-                    <Button type="submit" className="w-full" disabled={isQuickImporting}>
-                        {isQuickImporting ? 'Importing...' : 'Import'}
+                    <Button type="submit" className="w-full" disabled={isSidebarImporting}>
+                        {isSidebarImporting ? 'Importing...' : 'Import'}
                     </Button>
                 </form>
                 {decklistHistory.length > 0 && (

@@ -16,8 +16,8 @@ export function App() {
   const [apiResponse, setApiResponse] = useState<DecklistItem[] | string>("");
   const [decklistHistory, setDecklistHistory] = useState<(DecklistItem[])[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [quickImportUrl, setQuickImportUrl] = useState("");
-  const [isQuickImporting, setIsQuickImporting] = useState(false);
+  const [sidebarDecklist, setSidebarDecklist] = useState("");
+  const [isSidebarImporting, setIsSidebarImporting] = useState(false);
 
   useEffect(() => {
     const storedHistory = localStorage.getItem('decklistHistory');
@@ -48,35 +48,35 @@ export function App() {
     }
   }, [apiResponse]);
 
-  const handleQuickImport = async (event: React.FormEvent) => {
+  const handleSidebarImport = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!quickImportUrl) return;
+    if (!sidebarDecklist) return;
 
-    setIsQuickImporting(true);
+    setIsSidebarImporting(true);
     try {
         const response = await fetch('/api/moxfield', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ decklist: quickImportUrl }),
+            body: JSON.stringify({ decklist: sidebarDecklist }),
         });
         const data = await response.json();
         setApiResponse(data);
-        setQuickImportUrl('');
+        setSidebarDecklist('');
     } catch (error) {
-        console.error("Quick import failed:", error);
+        console.error("Sidebar import failed:", error);
     } finally {
-        setIsQuickImporting(false);
+        setIsSidebarImporting(false);
     }
   };
 
   const sidebarProps = {
     decklistHistory,
-    handleQuickImport,
-    quickImportUrl,
-    setQuickImportUrl,
-    isQuickImporting,
+    handleSidebarImport,
+    sidebarDecklist,
+    setSidebarDecklist,
+    isSidebarImporting,
     setApiResponse,
   };
 
