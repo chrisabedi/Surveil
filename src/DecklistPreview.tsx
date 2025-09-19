@@ -113,7 +113,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                 >
                     <div className="p-4" onClick={(e) => e.stopPropagation()}>
                         <img 
-                            src={selectedCard.image_uris?.small} 
+                            src={selectedCard.image_uris?.normal || selectedCard.image_uris?.small} 
                             alt={selectedCard.name} 
                             className="rounded-lg max-w-[80vw] max-h-[80vh]" 
                         />
