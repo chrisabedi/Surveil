@@ -14,6 +14,7 @@ app.use(loggerMiddleware)
 app.use(express.json())
 let staticPath = getCwd()
 
+app.use(express.static(path.join(staticPath, 'public')));
 app.use(express.static(path.join(staticPath, 'dist')));
 
 app.get('/', (req: Request, res: Response) => {

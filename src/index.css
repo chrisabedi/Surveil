@@ -9,19 +9,19 @@
     --card-foreground: 210 20% 98%;
     --popover: 224 71.4% 4.1%;
     --popover-foreground: 210 20% 98%;
-    --primary: 217.2 91.2% 59.8%; /* Brighter blue for primary actions */
+    --primary: 136 58% 52%; /* Vibrant Green */
     --primary-foreground: 210 20% 9.8%;
     --secondary: 222.2 47.4% 11.2%;
     --secondary-foreground: 210 20% 98%;
     --muted: 215 27.9% 16.9%;
     --muted-foreground: 217.2 19.2% 42.2%;
-    --accent: 217.2 91.2% 59.8%;
+    --accent: 136 58% 52%;
     --accent-foreground: 210 20% 9.8%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 216 34% 17%;
+    --border: 217.2 32.6% 25.5%;
+    --input: 217.2 32.6% 25.5%;
+    --ring: 136 71% 65%;
     --radius: 0.75rem; /* Slightly larger radius */
   }
 
@@ -36,10 +36,12 @@
 }
 
 .background-image {
-  @apply absolute inset-[-10%] w-[120%] h-[120%] object-cover opacity-10 transition-transform duration-500 ease-out;
-  background-image: url('https://i.imgur.com/rLd55sP.png'); /* Pixelated Black Lotus */
+  @apply absolute inset-[-10%] w-[120%] h-[120%] opacity-10 transition-transform duration-500 ease-out;
+  background-image: url('/minecraftdot.jpeg');
   background-position: center;
-  background-size: cover;
+  background-size: 64px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
 }
 
 header {
