@@ -35,11 +35,11 @@ function ManaCost({ manaCost }: { manaCost: string | undefined }) {
     const symbols = manaCost.match(/\{(.+?)\}/g);
 
     if (!symbols) {
-        return <span className="ml-2">{manaCost}</span>; // Fallback for unexpected formats
+        return <span>{manaCost}</span>; // Fallback for unexpected formats
     }
 
     return (
-        <span className="inline-flex items-center gap-x-0.5 ml-2 align-middle">
+        <span className="inline-flex items-center gap-x-0.5 align-middle">
             {symbols.map((symbol, index) => {
                 const symbolCode = symbol.replace(/\{|\}/g, '').toLowerCase().replace('/', '');
                 const imageUrl = `https://svgs.scryfall.io/card-symbols/${symbolCode}.svg`;
@@ -80,6 +80,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
             <tr className="border-b border-white/10">
                 <th scope="col" className="p-3 w-8 text-left">#</th>
                 <th scope="col" className="p-3 text-left">Name</th>
+                <th scope="col" className="p-3 text-right">Cost</th>
                 <th scope="col" className="p-3 text-right">Price (USD)</th>
             </tr>
         </thead>
@@ -88,7 +89,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
     const tableFooter = (
         <tfoot>
             <tr className="font-semibold border-t border-white/10">
-                <td colSpan={2} className="p-3 text-right">Total:</td>
+                <td colSpan={3} className="p-3 text-right">Total:</td>
                 <td className="p-3 text-right">${totalPrice.toFixed(2)}</td>
             </tr>
         </tfoot>
@@ -114,6 +115,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                                         <td className="p-3 truncate">
                                                             <span>{card.name}</span>
                                                         </td>
+                                                        <td className="p-3 text-right"></td>
                                                         <td className="p-3 text-right">N/A</td>
                                                     </tr>
                                                 );
@@ -126,7 +128,10 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                                         >
                                                             <td className="p-3">{overallIndex + 1}</td>
                                                             <td className="p-3 truncate">
-                                                                <span className="text-primary">{card.name}</span><ManaCost manaCost={cardData.mana_cost} />
+                                                                <span className="text-primary">{card.name}</span>
+                                                            </td>
+                                                            <td className="p-3 text-right">
+                                                                <ManaCost manaCost={cardData.mana_cost} />
                                                             </td>
                                                             <td className="p-3 text-right">${cardData.prices?.usd ?? 'N/A'}</td>
                                                         </tr>
