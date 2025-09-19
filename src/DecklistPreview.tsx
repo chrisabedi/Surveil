@@ -41,7 +41,7 @@ function ManaCost({ manaCost }: { manaCost: string | undefined }) {
     return (
         <span className="inline-flex items-center gap-x-0.5 align-middle">
             {symbols.map((symbol, index) => {
-                const symbolCode = symbol.replace(/\{|\}/g, '').toLowerCase().replace('/', '');
+                const symbolCode = symbol.replace(/\{|\}/g, '').replace(/\//g, '');
                 const imageUrl = `https://svgs.scryfall.io/card-symbols/${symbolCode}.svg`;
                 return (
                     <img
