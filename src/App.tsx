@@ -2,11 +2,6 @@ import "./index.css";
 import { MoxfieldImporter } from "./MoxfieldImporter";
 import { useState, useEffect } from "react";
 import { DecklistPreview, type DecklistItem } from "./DecklistPreview";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "./Sidebar";
 import { Menu } from "lucide-react";
@@ -15,7 +10,7 @@ import { Menu } from "lucide-react";
 export function App() {
   const [apiResponse, setApiResponse] = useState<DecklistItem[] | string>("");
   const [decklistHistory, setDecklistHistory] = useState<(DecklistItem[])[]>([]);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sidebarDecklist, setSidebarDecklist] = useState("");
   const [isSidebarImporting, setIsSidebarImporting] = useState(false);
 
@@ -35,7 +30,7 @@ export function App() {
 
   useEffect(() => {
     if (Array.isArray(apiResponse) && apiResponse.length > 0) {
-        setIsSheetOpen(false);
+        setIsSidebarOpen(false);
         setDecklistHistory(prevHistory => {
             const responseStr = JSON.stringify(apiResponse);
             const newHistory = [
@@ -54,7 +49,7 @@ export function App() {
 
     setIsSidebarImporting(true);
     try {
-        const response = await fetch('/api/moxfield', {
+        const response = await fetch('/api/moxfield-import', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -90,25 +85,24 @@ export function App() {
       <div className="w-full">
         <div className="flex flex-col min-h-screen">
           <header className="flex h-14 items-center gap-4 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:h-[60px] lg:px-6 sticky top-0 z-10">
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="shrink-0"
-                >
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle navigation menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="p-0">
-                 <Sidebar {...sidebarProps} />
-              </SheetContent>
-            </Sheet>
+            <Button
+              variant="outline"
+              size="icon"
+              className="shrink-0"
+              onClick={() => setIsSidebarOpen(prev => !prev)}
+            >
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle navigation menu</span>
+            </Button>
             <h1 className="text-2xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-800 to-primary">
                 Surveil
             </h1>
           </header>
+          {isSidebarOpen && (
+            <div className="border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4">
+              <Sidebar {...sidebarProps} />
+            </div>
+          )}
           <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 overflow-auto">
             <div className="max-w-6xl mx-auto w-full">
                 <div className="text-center">
