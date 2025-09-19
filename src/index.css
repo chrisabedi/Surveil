@@ -36,16 +36,16 @@
 }
 
 .background-image {
-  @apply absolute inset-[-10%] w-[120%] h-[120%] opacity-10 transition-transform duration-500 ease-out;
-  background-image: url('../public/minecraftDot.png');
+  @apply absolute inset-0 w-full h-full opacity-10;
+  background-image: url('/minecraftDot.png');
   background-position: center;
-  background-size: 64px;
-  background-repeat: repeat;
+  background-size: 256px;
+  background-repeat: no-repeat;
   image-rendering: pixelated;
 }
 
 header {
-  @apply fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-white/10;
+  @apply fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border;
 }
 
 .header-content {
