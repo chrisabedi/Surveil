@@ -39,19 +39,22 @@ export function MoxfieldImporter({ setApiResponse }: MoxfieldImporterProps) {
     };
 
     return (
-        <>
-            <h1 className="text-5xl font-bold my-4 leading-tight">moxfield</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex flex-col items-center gap-6 p-4 md:p-8">
+            <h1 className="text-4xl md:text-5xl font-bold my-4 leading-tight">Import Decklist</h1>
+            <p className="text-muted-foreground max-w-lg">
+                Paste your decklist from a site like Moxfield to get started. The tool will fetch card data, prices, and links.
+            </p>
+            <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-2xl">
                 <textarea
                     value={decklist}
                     onChange={(e) => setDecklist(e.target.value)}
                     className={cn(
-                        "flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                        "flex min-h-[200px] w-full rounded-lg border border-input bg-transparent px-4 py-3 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50 resize-y"
                     )}
-                    placeholder="Paste your decklist here"
+                    placeholder="1 Black Lotus&#10;4 Sol Ring&#10;..."
                 />
-                <Button type="submit">Submit</Button>
+                <Button type="submit" size="lg" className="w-full md:w-auto">Analyze Decklist</Button>
             </form>
-        </>
+        </div>
     );
 }
