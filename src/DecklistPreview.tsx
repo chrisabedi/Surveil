@@ -31,6 +31,7 @@ export interface ScryfallCard {
     cmc?: number;
     card_faces?: CardFace[];
     type_line?: string;
+    game_changer?: boolean;
 }
 
 export interface DecklistItem {
@@ -172,7 +173,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                                     >
                                                         <td className="p-3">{overallIndex + 1}</td>
                                                         <td className="p-3 truncate">
-                                                            <span className="text-primary">{card.name}</span>
+                                                            <span className="text-primary">{card.name}</span>{cardData.game_changer && <span className="ml-2" title="Game Changer">⚠️</span>}
                                                         </td>
                                                         <td className="p-3 text-right">
                                                             <ManaCost manaCost={cardData.card_faces?.[0]?.mana_cost || cardData.mana_cost} />
@@ -190,7 +191,7 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                                         >
                                                             <td className="p-3">{overallIndex + 1}</td>
                                                             <td className="p-3 truncate">
-                                                                <span className="text-primary">{card.name}</span>
+                                                                <span className="text-primary">{card.name}</span>{cardData.game_changer && <span className="ml-2" title="Game Changer">⚠️</span>}
                                                             </td>
                                                             <td className="p-3 text-right">
                                                                 <ManaCost manaCost={cardData.card_faces?.[0]?.mana_cost || cardData.mana_cost} />
@@ -284,6 +285,33 @@ function CmcChart({ cards }: { cards: DecklistItem[] }) {
     );
 }
 
+function GameChangersDisplay({ cards }: { cards: DecklistItem[] }) {
+    const gameChangers = cards.filter(
+        (card) => card.data?.game_changer
+    );
+
+    if (gameChangers.length === 0) {
+        return null;
+    }
+
+    return (
+        <div className="mt-8">
+            <h3 className="text-lg font-semibold mb-4">Game Changers</h3>
+            <div className="flex flex-wrap gap-4 justify-center">
+                {gameChangers.map(({ name, data }) => (
+                    <img
+                        key={name}
+                        src={(data!.card_faces?.[0]?.image_uris || data!.image_uris)?.small}
+                        alt={name}
+                        className="rounded-lg w-40"
+                        title={name}
+                    />
+                ))}
+            </div>
+        </div>
+    );
+}
+
 interface DecklistPreviewProps {
     apiResponse: DecklistItem[] | string;
 }
@@ -301,6 +329,7 @@ export function DecklistPreview({ apiResponse }: DecklistPreviewProps) {
                 <>
                     <CardList cards={apiResponse} />
                     <CmcChart cards={apiResponse} />
+                    <GameChangersDisplay cards={apiResponse} />
                 </>
             )}
         </div>
