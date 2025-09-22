@@ -312,6 +312,37 @@ function GameChangersDisplay({ cards }: { cards: DecklistItem[] }) {
     );
 }
 
+function DeckStats({ cards }: { cards: DecklistItem[] }) {
+    const cardsWithData = cards.filter((card) => card.data);
+
+    const pricedCards = cardsWithData.filter((card) => card.data?.prices?.usd != null);
+    const totalPrice = pricedCards.reduce((total, card) => total + parseFloat(card.data!.prices!.usd!), 0);
+    const averagePrice = pricedCards.length > 0 ? totalPrice / pricedCards.length : 0;
+
+    const nonLandSpells = cardsWithData.filter(
+        (card) => card.data && !card.data.type_line?.toLowerCase().includes('land')
+    );
+    const totalCmc = nonLandSpells.reduce((total, card) => total + (card.data?.cmc ?? 0), 0);
+    const averageCmc = nonLandSpells.length > 0 ? totalCmc / nonLandSpells.length : 0;
+
+    const gameChangers = cardsWithData
+        .filter((card) => card.data?.game_changer)
+        .map((card) => card.name);
+
+    if (cards.length === 0) {
+        return null;
+    }
+
+    return (
+        <div className="mb-4 text-sm text-muted-foreground">
+            <p>
+                The average cost of a card in this deck is ${averagePrice.toFixed(2)}. The average manacost of non-land spells is {averageCmc.toFixed(2)}.
+                {gameChangers.length > 0 && ` The game changers are: ${gameChangers.join(', ')}.`}
+            </p>
+        </div>
+    );
+}
+
 interface DecklistPreviewProps {
     apiResponse: DecklistItem[] | string;
 }
@@ -327,6 +358,7 @@ export function DecklistPreview({ apiResponse }: DecklistPreviewProps) {
                 <pre className="whitespace-pre-wrap font-mono text-sm">{apiResponse}</pre>
             ) : (
                 <>
+                    <DeckStats cards={apiResponse} />
                     <CardList cards={apiResponse} />
                     <CmcChart cards={apiResponse} />
                     <GameChangersDisplay cards={apiResponse} />
