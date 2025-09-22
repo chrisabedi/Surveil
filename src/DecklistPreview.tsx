@@ -231,6 +231,58 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
     );
 }
 
+function CmcChart({ cards }: { cards: DecklistItem[] }) {
+    const cmcDistribution = new Map<string, number>();
+
+    for (const card of cards) {
+        if (card.data?.cmc !== undefined && card.data.cmc > 0) {
+            const cmc = card.data.cmc;
+            if (cmc >= 13) {
+                const current = cmcDistribution.get('13+') || 0;
+                cmcDistribution.set('13+', current + 1);
+            } else {
+                const key = cmc.toString();
+                const current = cmcDistribution.get(key) || 0;
+                cmcDistribution.set(key, current + 1);
+            }
+        }
+    }
+
+    if (cmcDistribution.size === 0) {
+        return null;
+    }
+
+    const chartLabels = [...Array(12).keys()].map(i => (i + 1).toString());
+    if (cmcDistribution.has('13+')) {
+        chartLabels.push('13+');
+    }
+
+    const counts = chartLabels.map(label => cmcDistribution.get(label) || 0);
+    const maxCount = Math.max(...counts, 1);
+
+    return (
+        <div className="mt-8">
+            <h3 className="text-lg font-semibold mb-4">Mana Curve</h3>
+            <div className="flex items-end justify-center gap-2 h-48 p-4 bg-background/50 rounded-lg border border-white/10">
+                {chartLabels.map((label) => {
+                    const count = cmcDistribution.get(label) || 0;
+                    return (
+                        <div key={label} className="flex flex-col items-center justify-end gap-1 h-full w-8">
+                            <div className="text-sm font-medium">{count}</div>
+                            <div
+                                className="w-full bg-primary rounded-t-sm transition-all duration-300"
+                                style={{ height: `${(count / maxCount) * 80}%` }}
+                                title={`${count} card(s) at CMC ${label}`}
+                            ></div>
+                            <div className="text-xs text-muted-foreground">{label}</div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
 interface DecklistPreviewProps {
     apiResponse: DecklistItem[] | string;
 }
@@ -245,7 +297,10 @@ export function DecklistPreview({ apiResponse }: DecklistPreviewProps) {
             {typeof apiResponse === 'string' ? (
                 <pre className="whitespace-pre-wrap font-mono text-sm">{apiResponse}</pre>
             ) : (
-                <CardList cards={apiResponse} />
+                <>
+                    <CardList cards={apiResponse} />
+                    <CmcChart cards={apiResponse} />
+                </>
             )}
         </div>
     );
