@@ -34,7 +34,7 @@ app.post("/api/moxfield-import", async (req: Request, res: Response) => {
 
   const cardNames = lines.map(line => {
     // Regex to capture card name, ignoring quantity and set info in parentheses
-    const match = line.trim().match(/^(?:SB:|Commander:)?\s*\d+\s+(.+?)(?:\s+\([^()]+\)\s+[\w-]+)?$/);
+    const match = line.trim().match(/^\d+\s+(.*?)\s+\([A-Z0-9]+\)/);
     if (match && match[1]) {
       return match[1].trim();
     }
