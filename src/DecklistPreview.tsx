@@ -129,10 +129,8 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                             className="rounded-lg max-w-[80vw] max-h-[80vh]" 
                         />
                         <Button
-                            as="a"
-                            href={selectedCard.purchase_uris?.tcgplayer}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            onClick={() => selectedCard?.purchase_uris?.tcgplayer && window.open(selectedCard.purchase_uris.tcgplayer, '_blank', 'noopener,noreferrer')}
+                            disabled={!selectedCard?.purchase_uris?.tcgplayer}
                             className="w-full mt-2"
                             size="sm"
                         >
@@ -206,10 +204,8 @@ function CardList({ cards }: { cards: DecklistItem[] }) {
                                                             <img src={(cardData.card_faces?.[0]?.image_uris || cardData.image_uris)?.small} alt="Card preview" className="rounded-lg w-64 md:w-auto md:max-w-xs" />
                                                         </picture>
                                                         <Button
-                                                            as="a"
-                                                            href={cardData.purchase_uris?.tcgplayer}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
+                                                            onClick={() => cardData.purchase_uris?.tcgplayer && window.open(cardData.purchase_uris.tcgplayer, '_blank', 'noopener,noreferrer')}
+                                                            disabled={!cardData.purchase_uris?.tcgplayer}
                                                             className="w-full mt-2"
                                                             size="sm"
                                                         >
