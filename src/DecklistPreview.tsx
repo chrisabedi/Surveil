@@ -30,6 +30,7 @@ export interface ScryfallCard {
     mana_cost?: string;
     cmc?: number;
     card_faces?: CardFace[];
+    type_line?: string;
 }
 
 export interface DecklistItem {
@@ -235,11 +236,15 @@ function CmcChart({ cards }: { cards: DecklistItem[] }) {
     const cmcDistribution = new Map<string, number>();
 
     for (const card of cards) {
-        if (card.data?.cmc !== undefined && card.data.cmc > 0) {
+        if (!card.data || card.data.type_line?.toLowerCase().includes('land')) {
+            continue;
+        }
+
+        if (card.data.cmc !== undefined) {
             const cmc = card.data.cmc;
-            if (cmc >= 13) {
-                const current = cmcDistribution.get('13+') || 0;
-                cmcDistribution.set('13+', current + 1);
+            if (cmc >= 10) {
+                const current = cmcDistribution.get('10+') || 0;
+                cmcDistribution.set('10+', current + 1);
             } else {
                 const key = cmc.toString();
                 const current = cmcDistribution.get(key) || 0;
@@ -252,9 +257,9 @@ function CmcChart({ cards }: { cards: DecklistItem[] }) {
         return null;
     }
 
-    const chartLabels = [...Array(12).keys()].map(i => (i + 1).toString());
-    if (cmcDistribution.has('13+')) {
-        chartLabels.push('13+');
+    const chartLabels = [...Array(10).keys()].map(i => i.toString());
+    if (cmcDistribution.has('10+')) {
+        chartLabels.push('10+');
     }
 
     const counts = chartLabels.map(label => cmcDistribution.get(label) || 0);
