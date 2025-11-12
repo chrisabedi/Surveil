@@ -82,7 +82,7 @@ export function App() {
           className="background-image"
         />
       </div>
-      <div className="w-full">
+      <div className="w-full dark:bg-gray-800">
         <div className="flex flex-col h-screen">
           <header className="flex h-14 items-center gap-4 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 lg:h-[60px] lg:px-6 z-10">
             <Button
